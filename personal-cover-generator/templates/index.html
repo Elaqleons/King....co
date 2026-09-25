@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Personal Cover Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+    <div class="page-shell">
+        <section class="form-panel">
+            <div class="panel-header">
+                <p class="eyebrow">Personal Cover Generator</p>
+                <h1>Jaza taarifa zako</h1>
+            </div>
+
+            <form id="coverForm" method="post" enctype="multipart/form-data">
+                <div class="form-grid">
+                    <label>
+                        <span>Full Name</span>
+                        <input type="text" name="full_name" value="{{ data.get('full_name', '') }}" placeholder="Full Name" />
+                    </label>
+
+                    <label>
+                        <span>Profession / Course</span>
+                        <input type="text" name="profession" value="{{ data.get('profession', '') }}" placeholder="Profession / Course" />
+                    </label>
+
+                    <label class="full-width">
+                        <span>About Me</span>
+                        <textarea name="about_me" rows="4" placeholder="Tell us about yourself">{{ data.get('about_me', '') }}</textarea>
+                    </label>
+
+                    <label class="full-width">
+                        <span>Skills</span>
+                        <textarea name="skills" rows="3" placeholder="Your skills">{{ data.get('skills', '') }}</textarea>
+                    </label>
+
+                    <label>
+                        <span>Phone</span>
+                        <input type="tel" name="phone" value="{{ data.get('phone', '') }}" placeholder="Phone" />
+                    </label>
+
+                    <label>
+                        <span>Email</span>
+                        <input type="email" name="email" value="{{ data.get('email', '') }}" placeholder="Email" />
+                    </label>
+
+                    <label>
+                        <span>Location</span>
+                        <input type="text" name="location" value="{{ data.get('location', '') }}" placeholder="Location" />
+                    </label>
+
+                    <label>
+                        <span>Social media platform</span>
+                        <select name="social_platform">
+                            <option value="Instagram" {% if data.get('social_platform') == 'Instagram' %}selected{% endif %}>Instagram</option>
+                            <option value="X" {% if data.get('social_platform') == 'X' %}selected{% endif %}>X</option>
+                            <option value="LinkedIn" {% if data.get('social_platform') == 'LinkedIn' %}selected{% endif %}>LinkedIn</option>
+                            <option value="TikTok" {% if data.get('social_platform') == 'TikTok' %}selected{% endif %}>TikTok</option>
+                            <option value="Facebook" {% if data.get('social_platform') == 'Facebook' %}selected{% endif %}>Facebook</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Social media handle</span>
+                        <input type="text" name="social_handle" value="{{ data.get('social_handle', '') }}" placeholder="@username or username" />
+                    </label>
+
+                    <label>
+                        <span>Profile photo placement</span>
+                        <select name="photo_position" id="photoPosition">
+                            <option value="left" selected>Left</option>
+                            <option value="center">Center</option>
+                            <option value="right">Right</option>
+                        </select>
+                    </label>
+
+                    <label>
+                        <span>Profile photo</span>
+                        <input type="file" name="profile_photo" id="profilePhoto" accept="image/*" />
+                    </label>
+                </div>
+
+                <div class="customize-panel">
+                    <div class="customize-header">
+                        <span>Customize cover</span>
+                    </div>
+
+                    <div class="style-picker">
+                        <label>
+                            <span>Cover style</span>
+                            <select name="cover_style" id="coverStyle">
+                                <option value="modern" selected>Modern</option>
+                                <option value="classic">Classic</option>
+                                <option value="glass">Glass</option>
+                                <option value="minimal">Minimal</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="color-picker-group">
+                        <span>Choose cover colors</span>
+                        <div class="color-pickers" id="colorPickers">
+                            <label class="color-input">
+                                <input type="color" name="color1" value="#0f172a" />
+                            </label>
+                            <label class="color-input">
+                                <input type="color" name="color2" value="#2563eb" />
+                            </label>
+                            <label class="color-input">
+                                <input type="color" name="color3" value="#7c3aed" />
+                            </label>
+                        </div>
+                        <button type="button" class="tiny-btn" id="addColorBtn">Add more color</button>
+                    </div>
+                </div>
+
+                <div class="output-mode">
+                    <span>Choose output mode</span>
+                    <div class="mode-switch">
+                        <label class="mode-option active">
+                            <input type="radio" name="outputMode" value="image" checked />
+                            <span>Image</span>
+                        </label>
+                        <label class="mode-option">
+                            <input type="radio" name="outputMode" value="pdf" />
+                            <span>PDF</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button type="submit" class="primary-btn">Create Cover Page</button>
+                    <button type="button" class="secondary-btn" id="exportBtn">Download Image</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="preview-panel">
+            <div class="preview-header">
+                <p>Preview ya cover page</p>
+            </div>
+
+            <div class="cover-card" id="coverCard">
+                <div class="cover-top">
+                    <img id="profilePreview" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80" alt="Profile photo" />
+                    <div class="title-wrap">
+                        <h2 id="previewName">{{ data.get('full_name', 'Your Full Name') }}</h2>
+                        <p id="previewProfession">{{ data.get('profession', 'Profession / Course') }}</p>
+                    </div>
+                </div>
+
+                <div class="cover-section">
+                    <h3>About Me</h3>
+                    <p id="previewAbout">{{ data.get('about_me', 'Write something about yourself here.') }}</p>
+                </div>
+
+                <div class="cover-section">
+                    <h3>Skills</h3>
+                    <p id="previewSkills">{{ data.get('skills', 'Your skills') }}</p>
+                </div>
+
+                <div class="contact-grid">
+                    <div>
+                        <span>Phone</span>
+                        <p id="previewPhone">{{ data.get('phone', '+000 000 000') }}</p>
+                    </div>
+                    <div>
+                        <span>Email</span>
+                        <p id="previewEmail">{{ data.get('email', 'your@email.com') }}</p>
+                    </div>
+                    <div>
+                        <span>Location</span>
+                        <p id="previewLocation">{{ data.get('location', 'Your location') }}</p>
+                    </div>
+                    <div>
+                        <span>Social</span>
+                        <p id="previewSocial">{{ data.get('social_platform', 'Instagram') }}: {{ data.get('social_handle', '@username') }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
